@@ -1,9 +1,7 @@
 const dummy = (blogs) => {
-    
     return 1
   }
 const totalLikes = (blogs) => {
-  
     
     const likearray = blogs.map((likes, i) => blogs[i].likes)
     const total = (sum, item) => {
@@ -13,8 +11,6 @@ const totalLikes = (blogs) => {
 }
 
 const favoriteBlog = (blogs) => {
-
-    
     const likearray = blogs.map((likes, i) => blogs[i].likes)
     const array = blogs.map((likes, i) => blogs[i].likes)
     likearray.sort((a, b) => b - a)
@@ -59,8 +55,6 @@ const mostLikes = (blogs) => {
     const unsorted = blogs.map((likes, i) => blogs[i].author)
     const likearray = blogs.map((likes, i) => blogs[i].likes)
     authorarray.sort()
-    console.log(unsorted)
-    console.log(authorarray)
     let pituus = authorarray.length
     let most = 0
     let name = authorarray[0]
@@ -77,13 +71,9 @@ const mostLikes = (blogs) => {
         let test = authorarray[i]
         
         let testnum = 0
-        let filtered = authorarray.filter(name => name === test)
-
         let indexes = allIndexOf(unsorted, test)
-        console.log(indexes)
-        for(i = 0; i < indexes.length; i++){
-            testnum =+ likearray[indexes[i]]
-            console.log(testnum)
+        for(a = 0; a < indexes.length; a++){
+            testnum = testnum + likearray[indexes[a]]
         }
         if(testnum > most){
             most = testnum 
@@ -92,11 +82,11 @@ const mostLikes = (blogs) => {
         }
         
     }
-    res =  {
+    response =  {
         author: name,
-        blogs: most
+        likes: most
     }
-    return res
+    return response
 }
 module.exports = {
     dummy,
