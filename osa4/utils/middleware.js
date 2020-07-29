@@ -1,5 +1,5 @@
 const logger = require('./logger')
-const { request, response } = require('../app')
+const { req, res } = require('../app')
 
 const requestLogger = (req, res, next) => {
     logger.info('Method:', req.method)
@@ -9,7 +9,7 @@ const requestLogger = (req, res, next) => {
 }
 
 const unknownEndpoint = (req, res) => {
-    response.status(404).send({ error: 'unknown endpoint'})
+    res.status(404).send({ error: 'unknown endpoint'})
 }
 
 const errorHandler = (error, req, res, next) => {
@@ -17,16 +17,31 @@ const errorHandler = (error, req, res, next) => {
 
     if(error.name === 'CastError'){
         return res.status(400).send({ error: 'malformed id'})
-    } else if(error.name === 'ValidationError'){
-        return res.status(400).json({ error: error.message})
+    } else if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: error.message })
+    } else if (error.name === 'JsonWebTokenError') {
+        return response.status(401).json({
+          error: 'invalid token'
+        })
     }
 
     next(error)
 
 }
 
+const tokenExtractor = (request, response, next) => {
+    const authorization = request.get('authorization')
+    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+      return authorization.substring(7)
+    }
+    return null
+    next()
+}
+
+
 module.exports = {
     requestLogger,
     unknownEndpoint,
-    errorHandler
+    errorHandler,
+    tokenExtractor
 }

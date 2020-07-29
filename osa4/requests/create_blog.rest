@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imlsa2thTCIsImlkIjoiNWYxZWUzYjg0ZTU5MGMwODMwNTQ0NTgxIiwiaWF0IjoxNTk1ODYwNTU0fQ.-r1wu-Sphz4wtmGfIHMYyhiMPhtEUA8Df83T9fmnfTw
 
 {
-    "title": "Ruoka",
-    "author": "kalja",
+    "title": "Ruokaa",
+    "author": "kaljaa",
     "url": "url",
-    "likes": "7"
+    "likes": "8"
 }
