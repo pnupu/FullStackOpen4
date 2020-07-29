@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imlsa2thTCIsImlkIjoiNWYxZWUzYjg0ZTU5MGMwODMwNTQ0NTgxIiwiaWF0IjoxNTk1ODYwNTU0fQ.-r1wu-Sphz4wtmGfIHMYyhiMPhtEUA8Df83T9fmnfTw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ.eyJ1c2VybmFtZSI6Imlsa2thTCIsImlkIjoiNWYxZWUzYjg0ZTU5MGMwODMwNTQ0NTgxIiwiaWF0IjoxNTk2MDI0OTQwfQ.zsDVQqhbyvqnwECKwhrxhrmUnF5kPewPpzAeA9CLSzo
 
 {
-    "title": "Ruokaa",
-    "author": "kaljaa",
+    "title": "bulia",
+    "author": "joku",
     "url": "url",
     "likes": "8"
 }

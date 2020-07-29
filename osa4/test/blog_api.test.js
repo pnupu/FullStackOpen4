@@ -7,7 +7,7 @@ const helper = require('./test_helper')
 const blogit = require('./blogcatalog')
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
-
+const jsonwebtoken = require("jsonwebtoken")
 jest.setTimeout(60000)
 
 beforeEach(async () => {
@@ -15,6 +15,12 @@ beforeEach(async () => {
 
   let blogObject = new Blog(helper.initialblogs[0])
   await blogObject.save()
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({ username: 'root', passwordHash })
+
+  await user.save()
 
 })
 
@@ -38,6 +44,30 @@ test('blogs have id', async () => {
 })
 
 test('Post Test', async () => {
+  
+  const newUser = {
+    username: 'newUser',
+    name: 'uusi nimi',
+    password: 'salasana',
+  }
+  const logincreds = {
+    username: 'newUser',
+    password: 'salasana'
+  }
+  await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api 
+   .post('/api/login')
+   .send(logincreds)
+   .expect(200)
+   .expect('Content-Type', /application\/json/)
+
+  const token = response.body.token
+  
   const blogToBeAdded = [
     {
       title: "Uusi Blogi",
@@ -45,11 +75,13 @@ test('Post Test', async () => {
       url: "urli",
       likes: 7, 
       __v: 0
+      
     }
   ]
   let newBlog = new Blog(blogToBeAdded[0])
   await api
    .post('/api/blogs')
+   .set('Authorization', `Bearer ${token}`)
    .send(newBlog)
    .expect(200)             
    .expect('Content-Type', /application\/json/)
@@ -85,6 +117,29 @@ test('Likes are zero', async () => {
 })
 
 test('bad blog post test', async () => {
+  const newUser = {
+    username: 'newUser',
+    name: 'uusi nimi',
+    password: 'salasana',
+  }
+  const logincreds = {
+    username: 'newUser',
+    password: 'salasana'
+  }
+  await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api 
+   .post('/api/login')
+   .send(logincreds)
+   .expect(200)
+   .expect('Content-Type', /application\/json/)
+
+  const token = response.body.token
+  
   const blogToBeAdded = [
     {
       author: "naata",
@@ -93,12 +148,12 @@ test('bad blog post test', async () => {
       __v: 0
     }
   ]
+
   await api
    .post('/api/blogs')
+   .set('Authorization', `Bearer ${token}`)
    .send(blogToBeAdded)
    .expect(400)
-
-
   const blogsAtEnd = await helper.blogsInDb()
   expect(blogsAtEnd).toHaveLength(helper.initialblogs.length)
 })
@@ -149,9 +204,9 @@ describe('when there is initially one user at db', () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
-      username: 'mluukkai',
-      name: 'Matti Luukkainen',
-      password: 'salainen',
+      username: 'newUser',
+      name: 'uusi nimi',
+      password: 'salasana',
     }
 
     await api
