@@ -95,6 +95,28 @@ test('Post Test', async () => {
 })
 
 test('Likes are zero', async () => {
+  const newUser = {
+    username: 'newUser',
+    name: 'uusi nimi',
+    password: 'salasana',
+  }
+  const logincreds = {
+    username: 'newUser',
+    password: 'salasana'
+  }
+  await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api 
+   .post('/api/login')
+   .send(logincreds)
+   .expect(200)
+   .expect('Content-Type', /application\/json/)
+
+  const token = response.body.token
   const blogToBeAdded = [
     {
       title: "Uusi Blogi",
@@ -106,6 +128,7 @@ test('Likes are zero', async () => {
   let newBlog = new Blog(blogToBeAdded[0])
   await api
    .post('/api/blogs')
+   .set('Authorization', `Bearer ${token}`)
    .send(newBlog)
    .expect(200)             
    .expect('Content-Type', /application\/json/)
@@ -159,20 +182,73 @@ test('bad blog post test', async () => {
 })
 
 test('delete blog', async () => {
-  const blogsAtStart = await helper.blogsInDb()
-  const blogToDelete = blogsAtStart[0]
-
-  
+  const newUser = {
+    username: 'newUser',
+    name: 'uusi nimi',
+    password: 'salasana',
+  }
+  const logincreds = {
+    username: 'newUser',
+    password: 'salasana'
+  }
   await api
-   .delete(`/api/blogs/${blogToDelete.id}`)
+    .post('/api/users')
+    .send(newUser)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api 
+   .post('/api/login')
+   .send(logincreds)
+   .expect(200)
+   .expect('Content-Type', /application\/json/)
+
+  const token = response.body.token
+  
+
+  const blogToBeAdded = [
+    {
+      title: "Uusi Blogi",
+      author: "naata",
+      url: "urli",
+      likes: 7, 
+      __v: 0
+      
+    }
+  ]
+  let newBlog = new Blog(blogToBeAdded[0])
+  await api
+   .post('/api/blogs')
+   .set('Authorization', `Bearer ${token}`)
+   .send(newBlog)
+   .expect(200)             
+   .expect('Content-Type', /application\/json/)
+
+  const blogsAtEndd = await helper.blogsInDb()
+  expect(blogsAtEndd).toHaveLength(helper.initialblogs.length + 1)
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[1]
+  await api
+   .delete(`/api/blogs/${blogToDelete._id}`)
+   .set('Authorization', `Bearer ${token}`)
    .expect(204)
   
    const blogsAtEnd = await helper.blogsInDb()
 
-   expect(blogsAtEnd).toHaveLength(helper.initialblogs.length - 1)
+   expect(blogsAtEnd).toHaveLength(1)
 
 })
+test('delete request fails', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+  await api
+   .delete(`/api/blogs/${blogToDelete.id}`)
+   .expect(401)
+  
+   const blogsAtEnd = await helper.blogsInDb()
 
+   expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+})
 test('update blog', async () => {
   const blogsAtStart = await helper.blogsInDb()
   let blogToUpdate = new Blog(blogsAtStart[0])
