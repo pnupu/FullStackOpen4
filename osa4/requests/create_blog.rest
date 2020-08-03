@@ -1,10 +1,11 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ.eyJ1c2VybmFtZSI6Imlsa2thTCIsImlkIjoiNWYxZWUzYjg0ZTU5MGMwODMwNTQ0NTgxIiwiaWF0IjoxNTk2MDI0OTQwfQ.zsDVQqhbyvqnwECKwhrxhrmUnF5kPewPpzAeA9CLSzo
+Authorization: Bearer token
 
 {
-    "title": "bulia",
-    "author": "joku",
+    "title": "title",
+    "author": "author",
     "url": "url",
     "likes": "8"
 }
+
